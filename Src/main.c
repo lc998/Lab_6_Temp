@@ -138,11 +138,9 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
-	  //HAL_Delay(500);
 	  if(currentSek != sekTick){
-
+		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  			uint32_t temp = sekTick;
 
 	  			uint32_t hours = temp / 3600;
@@ -174,6 +172,9 @@ int main(void)
 	  		}
 
 	  		HAL_Delay(10);
+
+
+
   }
   /* USER CODE END 3 */
 
@@ -246,7 +247,7 @@ static void MX_ADC1_Init(void)
     /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion) 
     */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
@@ -266,7 +267,7 @@ static void MX_ADC1_Init(void)
     */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
