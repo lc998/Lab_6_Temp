@@ -64,6 +64,12 @@ typedef enum { s_ZERO, s_ONE} position_state;
 position_state s_position = s_ZERO;
 
 uint32_t sekCounter = 0;
+
+uint16_t channel_1 = 0;
+
+uint16_t DHT11_timeout = 10000;
+int16_t DHT11_buff_raw[41];
+int8_t DHT11_data[5];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -76,6 +82,10 @@ static void MX_ADC1_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+
+int16_t read_DHT11(void);
+int16_t read_DHT11_bit_raw(void);
+int16_t readAnalogTemp(void);
 void printClock(TextLCDType *lcd, uint8_t x, uint8_t y, uint8_t time);
 /* USER CODE END PFP */
 
@@ -393,6 +403,96 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+int16_t read_DHT11(void){
+	uint16_t cnt;
+
+	//Initiate conversion
+	HAL_Delay(100);
+	HAL_GPIO_WritePin(DHT_11_GPIO_Port, DHT_11_Pin, 0);
+	HAL_Delay(20);
+	HAL_GPIO_WritePin(DHT_11_GPIO_Port, DHT_11_Pin, 1);
+
+	//Make sure GPIO is high before we start to compute data from DHT11 sensor
+	while(HAL_GPIO_ReadPin(DHT_11_GPIO_Port, DHT_11_Pin) == 1){
+		cnt++;
+		if(cnt > DHT11_timeout)
+			return -99;
+	}
+
+	//Read raw bit timing values. Negative values indicates 0 and positive values 1.
+	for (uint8_t k = 0; k < 41; k++) {
+		DHT11_buff_raw[k] = read_DHT11_bit_raw();
+	}
+
+	//Convering raw timing values. Negative values indicates 0 and positive values 1.
+	uint8_t val;
+	for (uint8_t byte = 0; byte < 5; byte++) {
+		val = 0;
+		for (uint8_t bit = 0; bit < max; ++bit) {
+			//Check if we timed out during reading bit
+			if(DHT11_buff_raw[(byte << 3) + bit + 1] > 0){
+				val = val | 0x01;
+			}
+		}
+		DHT11_data[byte] = val;
+	}
+
+	uint8_t sum = 0;
+	for (int byte = 0; byte < max; byte++) {
+		sum = sum + DHT11_data[byte];
+	}
+
+	if(sum != DHT11_data[4])
+		return -99;
+
+	return DHT11_data[2];
+}
+
+int16_t read_DHT11_bit_raw(void){
+	uint16_t cnt_low = 0;
+
+	//count how long many loops the GPIO pin is low
+	while(HAL_GPIO_ReadPin(DHT_11_GPIO_Port, DHT_11_Pin) == 0){
+		cnt_low++;
+		if(cnt_low >= DHT11_timeout)
+			return DHT11_timeout;
+	}
+
+	uint16_t cnt_high = 0;
+
+	//count how long many loops the GPIO pin is high
+	while(HAL_GPIO_ReadPin(DHT_11_GPIO_Port, DHT_11_Pin) == 1){
+		cnt_high++;
+		if (cnt_high >= DHT11_timeout)
+			return DHT11_timeout;
+	}
+
+
+	//Return the difference between low and high count.
+	//Will be < 0 for a '0'-bit and > 0 for a '1'-bit
+	return cnt_high-cnt_low;
+}
+
+int16_t readAnalogTemp(void){
+	uint8_t temperature;
+
+	if(HAL_ADC_Start(&hadc1, HAL_MAX_DELAY) == HAL_OK){
+		channel_1 = HAL_ADC_GetValue(&hadc1);
+	}
+	HAL_ADC_Stop(&hadc1);
+
+	/*Calculate Thermistor Resistance. Code Begin */
+
+	/*Calculate Thermistor Resistance. Code End*/
+
+	/*Calculate Thermistor. Code Begin*/
+
+	/*Calculate Thermistor. Code End*/
+
+
+	return temperature;
+}
 
 void printClock(TextLCDType *lcd, uint8_t x, uint8_t y, uint8_t time){
 //	uint8_t tempTime = time;
