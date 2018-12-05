@@ -150,7 +150,6 @@ int main(void)
   /* USER CODE BEGIN 3 */
 
 	  if(currentSek != sekTick){
-		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  			uint32_t temp = sekTick;
 
 	  			uint32_t hours = temp / 3600;
@@ -179,6 +178,8 @@ int main(void)
 
 	  			sekCount = (sekCount+1) % 60;
 	  			i++;
+
+	  			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 	  		}
 
 	  		HAL_Delay(10);
@@ -416,8 +417,9 @@ int16_t read_DHT11(void){
 	//Make sure GPIO is high before we start to compute data from DHT11 sensor
 	while(HAL_GPIO_ReadPin(DHT_11_GPIO_Port, DHT_11_Pin) == 1){
 		cnt++;
-		if(cnt > DHT11_timeout)
+		if(cnt > DHT11_timeout){
 			return -99;
+		}
 	}
 
 	//Read raw bit timing values. Negative values indicates 0 and positive values 1.
@@ -429,7 +431,11 @@ int16_t read_DHT11(void){
 	uint8_t val;
 	for (uint8_t byte = 0; byte < 5; byte++) {
 		val = 0;
-		for (uint8_t bit = 0; bit < max; ++bit) {
+		for (uint8_t bit = 0; bit < 8; ++bit) {
+			if(DHT11_buff_raw[(byte << 3)+bit+1] >= DHT11_timeout){
+				return -99;
+			}
+			val = val << 1;//shift left as MSB first
 			//Check if we timed out during reading bit
 			if(DHT11_buff_raw[(byte << 3) + bit + 1] > 0){
 				val = val | 0x01;
@@ -439,12 +445,13 @@ int16_t read_DHT11(void){
 	}
 
 	uint8_t sum = 0;
-	for (int byte = 0; byte < max; byte++) {
+	for (int byte = 0; byte < 4; byte++) {
 		sum = sum + DHT11_data[byte];
 	}
 
-	if(sum != DHT11_data[4])
+	if(sum != DHT11_data[4]){
 		return -99;
+	}
 
 	return DHT11_data[2];
 }
@@ -477,7 +484,7 @@ int16_t read_DHT11_bit_raw(void){
 int16_t readAnalogTemp(void){
 	uint8_t temperature;
 
-	if(HAL_ADC_Start(&hadc1, HAL_MAX_DELAY) == HAL_OK){
+	if(HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY) == HAL_OK){
 		channel_1 = HAL_ADC_GetValue(&hadc1);
 	}
 	HAL_ADC_Stop(&hadc1);

@@ -17,29 +17,29 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   6 .data         00000010  20000000  08001cc8  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .bss          0000013c  20000010  08001cd8  00020010  2**2
+  7 .bss          00000198  20000010  08001cd8  00020010  2**2
                   ALLOC
-  8 ._user_heap_stack 00000600  2000014c  08001cd8  0002014c  2**0
+  8 ._user_heap_stack 00000600  200001a8  08001cd8  000201a8  2**0
                   ALLOC
   9 .ARM.attributes 00000030  00000000  00000000  00020010  2**0
                   CONTENTS, READONLY
- 10 .debug_info   00014f9f  00000000  00000000  00020040  2**0
+ 10 .debug_info   00015264  00000000  00000000  00020040  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_abbrev 00002838  00000000  00000000  00034fdf  2**0
+ 11 .debug_abbrev 00002865  00000000  00000000  000352a4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_loc    000067f9  00000000  00000000  00037817  2**0
+ 12 .debug_loc    000069b9  00000000  00000000  00037b09  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_aranges 00000980  00000000  00000000  0003e010  2**3
+ 13 .debug_aranges 00000998  00000000  00000000  0003e4c8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_ranges 00000c08  00000000  00000000  0003e990  2**3
+ 14 .debug_ranges 00000c88  00000000  00000000  0003ee60  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_line   00005337  00000000  00000000  0003f598  2**0
+ 15 .debug_line   000053c2  00000000  00000000  0003fae8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_str    00003ba4  00000000  00000000  000448cf  2**0
+ 16 .debug_str    00003c32  00000000  00000000  00044eaa  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .comment      0000007c  00000000  00000000  00048473  2**0
+ 17 .comment      0000007c  00000000  00000000  00048adc  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00001be0  00000000  00000000  000484f0  2**2
+ 18 .debug_frame  00001c38  00000000  00000000  00048b58  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -3659,22 +3659,22 @@ void SystemClock_Config(void)
   hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV8;
  8001812:	f44f 3e40 	mov.w	lr, #196608	; 0x30000
  8001816:	e884 4008 	stmia.w	r4, {r3, lr}
+  hadc1.Init.ScanConvMode = DISABLE;
+ 800181a:	6120      	str	r0, [r4, #16]
   hadc1.Init.ContinuousConvMode = DISABLE;
- 800181a:	61a0      	str	r0, [r4, #24]
+ 800181c:	61a0      	str	r0, [r4, #24]
   hadc1.Init.DiscontinuousConvMode = DISABLE;
- 800181c:	6220      	str	r0, [r4, #32]
+ 800181e:	6220      	str	r0, [r4, #32]
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
- 800181e:	62e0      	str	r0, [r4, #44]	; 0x2c
+ 8001820:	62e0      	str	r0, [r4, #44]	; 0x2c
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
- 8001820:	4b5d      	ldr	r3, [pc, #372]	; (8001998 <main+0x2b0>)
+ 8001822:	4b5d      	ldr	r3, [pc, #372]	; (8001998 <main+0x2b0>)
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
- 8001822:	60e0      	str	r0, [r4, #12]
+ 8001824:	60e0      	str	r0, [r4, #12]
   hadc1.Init.DMAContinuousRequests = DISABLE;
- 8001824:	6320      	str	r0, [r4, #48]	; 0x30
+ 8001826:	6320      	str	r0, [r4, #48]	; 0x30
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
- 8001826:	4620      	mov	r0, r4
-  hadc1.Init.ScanConvMode = ENABLE;
- 8001828:	6125      	str	r5, [r4, #16]
+ 8001828:	4620      	mov	r0, r4
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
  800182a:	62a3      	str	r3, [r4, #40]	; 0x28
   hadc1.Init.NbrOfConversion = 1;
@@ -3752,114 +3752,115 @@ void SystemClock_Config(void)
   TextLCD_Puts(&lcd, "Goddag! :)");
  800189e:	f7ff febe 	bl	800161e <TextLCD_Puts>
   sekTick = 39660;
- 80018a2:	4b44      	ldr	r3, [pc, #272]	; (80019b4 <main+0x2cc>)
- 80018a4:	f649 22ec 	movw	r2, #39660	; 0x9aec
- 80018a8:	601a      	str	r2, [r3, #0]
+ 80018a2:	4a44      	ldr	r2, [pc, #272]	; (80019b4 <main+0x2cc>)
+ 80018a4:	f649 23ec 	movw	r3, #39660	; 0x9aec
+ 80018a8:	6013      	str	r3, [r2, #0]
+ 80018aa:	4690      	mov	r8, r2
   uint32_t currentSek = sekTick + 1;
- 80018aa:	f649 26ed 	movw	r6, #39661	; 0x9aed
- 80018ae:	4698      	mov	r8, r3
+ 80018ac:	f649 23ed 	movw	r3, #39661	; 0x9aed
 	  			TextLCD_Putchar(&lcd, 0x30+ hours % 10);
  80018b0:	270a      	movs	r7, #10
-	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
- 80018b2:	2120      	movs	r1, #32
- 80018b4:	4830      	ldr	r0, [pc, #192]	; (8001978 <main+0x290>)
- 80018b6:	f7ff f908 	bl	8000aca <HAL_GPIO_TogglePin>
 	  if(currentSek != sekTick){
- 80018ba:	f8d8 5000 	ldr.w	r5, [r8]
- 80018be:	42ae      	cmp	r6, r5
- 80018c0:	d04f      	beq.n	8001962 <main+0x27a>
+ 80018b2:	f8d8 5000 	ldr.w	r5, [r8]
+ 80018b6:	42ab      	cmp	r3, r5
+ 80018b8:	d053      	beq.n	8001962 <main+0x27a>
 	  			uint32_t seconds = temp % 60;
- 80018c2:	f04f 0b3c 	mov.w	fp, #60	; 0x3c
+ 80018ba:	f04f 0b3c 	mov.w	fp, #60	; 0x3c
 	  			TextLCD_Position(&lcd, 1, 0);
- 80018c6:	2200      	movs	r2, #0
+ 80018be:	2200      	movs	r2, #0
 	  			uint32_t seconds = temp % 60;
- 80018c8:	fbb5 f1fb 	udiv	r1, r5, fp
+ 80018c0:	fbb5 f1fb 	udiv	r1, r5, fp
 	  			TextLCD_Position(&lcd, 1, 0);
- 80018cc:	4620      	mov	r0, r4
+ 80018c4:	4620      	mov	r0, r4
 	  			uint32_t seconds = temp % 60;
- 80018ce:	fb0b 5a11 	mls	sl, fp, r1, r5
+ 80018c6:	fb0b 5a11 	mls	sl, fp, r1, r5
 	  			TextLCD_Position(&lcd, 1, 0);
- 80018d2:	2101      	movs	r1, #1
- 80018d4:	f7ff fe8e 	bl	80015f4 <TextLCD_Position>
+ 80018ca:	2101      	movs	r1, #1
+ 80018cc:	f7ff fe92 	bl	80015f4 <TextLCD_Position>
 	  			uint32_t tenHours = hours / 10;
- 80018d8:	f648 41a0 	movw	r1, #36000	; 0x8ca0
- 80018dc:	fbb5 f1f1 	udiv	r1, r5, r1
+ 80018d0:	f648 41a0 	movw	r1, #36000	; 0x8ca0
+ 80018d4:	fbb5 f1f1 	udiv	r1, r5, r1
 	  			TextLCD_Putchar(&lcd, 0x30+tenHours);
- 80018e0:	3130      	adds	r1, #48	; 0x30
- 80018e2:	b2c9      	uxtb	r1, r1
- 80018e4:	4620      	mov	r0, r4
- 80018e6:	f7ff fe92 	bl	800160e <TextLCD_Putchar>
+ 80018d8:	3130      	adds	r1, #48	; 0x30
+ 80018da:	b2c9      	uxtb	r1, r1
+ 80018dc:	4620      	mov	r0, r4
+ 80018de:	f7ff fe96 	bl	800160e <TextLCD_Putchar>
 	  			uint32_t minutes = (temp % 3600) / 60;
- 80018ea:	f44f 6661 	mov.w	r6, #3600	; 0xe10
- 80018ee:	fbb5 f9f6 	udiv	r9, r5, r6
+ 80018e2:	f44f 6661 	mov.w	r6, #3600	; 0xe10
+ 80018e6:	fbb5 f9f6 	udiv	r9, r5, r6
 	  			TextLCD_Putchar(&lcd, 0x30+ hours % 10);
- 80018f2:	fbb9 f1f7 	udiv	r1, r9, r7
- 80018f6:	fb07 9111 	mls	r1, r7, r1, r9
- 80018fa:	3130      	adds	r1, #48	; 0x30
- 80018fc:	b2c9      	uxtb	r1, r1
+ 80018ea:	fbb9 f1f7 	udiv	r1, r9, r7
+ 80018ee:	fb07 9111 	mls	r1, r7, r1, r9
+ 80018f2:	3130      	adds	r1, #48	; 0x30
+ 80018f4:	b2c9      	uxtb	r1, r1
+ 80018f6:	4620      	mov	r0, r4
+ 80018f8:	f7ff fe89 	bl	800160e <TextLCD_Putchar>
+	  			TextLCD_Putchar(&lcd, ':');
+ 80018fc:	213a      	movs	r1, #58	; 0x3a
  80018fe:	4620      	mov	r0, r4
  8001900:	f7ff fe85 	bl	800160e <TextLCD_Putchar>
-	  			TextLCD_Putchar(&lcd, ':');
- 8001904:	213a      	movs	r1, #58	; 0x3a
- 8001906:	4620      	mov	r0, r4
- 8001908:	f7ff fe81 	bl	800160e <TextLCD_Putchar>
 	  			uint32_t minutes = (temp % 3600) / 60;
- 800190c:	fb06 5619 	mls	r6, r6, r9, r5
+ 8001904:	fb06 5619 	mls	r6, r6, r9, r5
 	  			uint32_t tenMinutes = minutes /10;
- 8001910:	f44f 7116 	mov.w	r1, #600	; 0x258
- 8001914:	fbb6 f1f1 	udiv	r1, r6, r1
+ 8001908:	f44f 7116 	mov.w	r1, #600	; 0x258
+ 800190c:	fbb6 f1f1 	udiv	r1, r6, r1
 	  			TextLCD_Putchar(&lcd, 0x30+tenMinutes);
- 8001918:	3130      	adds	r1, #48	; 0x30
- 800191a:	b2c9      	uxtb	r1, r1
- 800191c:	4620      	mov	r0, r4
- 800191e:	f7ff fe76 	bl	800160e <TextLCD_Putchar>
+ 8001910:	3130      	adds	r1, #48	; 0x30
+ 8001912:	b2c9      	uxtb	r1, r1
+ 8001914:	4620      	mov	r0, r4
+ 8001916:	f7ff fe7a 	bl	800160e <TextLCD_Putchar>
 	  			uint32_t minutes = (temp % 3600) / 60;
- 8001922:	fbb6 f6fb 	udiv	r6, r6, fp
+ 800191a:	fbb6 f6fb 	udiv	r6, r6, fp
 	  			TextLCD_Putchar(&lcd, 0x30 + (minutes % 10));
- 8001926:	fbb6 f1f7 	udiv	r1, r6, r7
- 800192a:	fb07 6111 	mls	r1, r7, r1, r6
- 800192e:	3130      	adds	r1, #48	; 0x30
- 8001930:	b2c9      	uxtb	r1, r1
+ 800191e:	fbb6 f1f7 	udiv	r1, r6, r7
+ 8001922:	fb07 6111 	mls	r1, r7, r1, r6
+ 8001926:	3130      	adds	r1, #48	; 0x30
+ 8001928:	b2c9      	uxtb	r1, r1
+ 800192a:	4620      	mov	r0, r4
+ 800192c:	f7ff fe6f 	bl	800160e <TextLCD_Putchar>
+	  			TextLCD_Putchar(&lcd, ':');
+ 8001930:	213a      	movs	r1, #58	; 0x3a
  8001932:	4620      	mov	r0, r4
  8001934:	f7ff fe6b 	bl	800160e <TextLCD_Putchar>
-	  			TextLCD_Putchar(&lcd, ':');
- 8001938:	213a      	movs	r1, #58	; 0x3a
- 800193a:	4620      	mov	r0, r4
- 800193c:	f7ff fe67 	bl	800160e <TextLCD_Putchar>
 	  			uint32_t tenSeconds = seconds / 10;
- 8001940:	fbba f5f7 	udiv	r5, sl, r7
+ 8001938:	fbba f5f7 	udiv	r5, sl, r7
 	  			TextLCD_Putchar(&lcd, 0x30 + (tenSeconds % 10));
- 8001944:	f105 0130 	add.w	r1, r5, #48	; 0x30
- 8001948:	b2c9      	uxtb	r1, r1
- 800194a:	4620      	mov	r0, r4
- 800194c:	f7ff fe5f 	bl	800160e <TextLCD_Putchar>
+ 800193c:	f105 0130 	add.w	r1, r5, #48	; 0x30
+ 8001940:	b2c9      	uxtb	r1, r1
+ 8001942:	4620      	mov	r0, r4
+ 8001944:	f7ff fe63 	bl	800160e <TextLCD_Putchar>
 	  			TextLCD_Putchar(&lcd, 0x30 + (seconds % 10));
- 8001950:	fb07 a115 	mls	r1, r7, r5, sl
- 8001954:	3130      	adds	r1, #48	; 0x30
- 8001956:	b2c9      	uxtb	r1, r1
- 8001958:	4620      	mov	r0, r4
- 800195a:	f7ff fe58 	bl	800160e <TextLCD_Putchar>
+ 8001948:	fb07 a115 	mls	r1, r7, r5, sl
+ 800194c:	3130      	adds	r1, #48	; 0x30
+ 800194e:	b2c9      	uxtb	r1, r1
+ 8001950:	4620      	mov	r0, r4
+ 8001952:	f7ff fe5c 	bl	800160e <TextLCD_Putchar>
+	  			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+ 8001956:	2120      	movs	r1, #32
+ 8001958:	4807      	ldr	r0, [pc, #28]	; (8001978 <main+0x290>)
 	  			currentSek = sekTick;
- 800195e:	f8d8 5000 	ldr.w	r5, [r8]
+ 800195a:	f8d8 5000 	ldr.w	r5, [r8]
+	  			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+ 800195e:	f7ff f8b4 	bl	8000aca <HAL_GPIO_TogglePin>
 	  		HAL_Delay(10);
  8001962:	200a      	movs	r0, #10
  8001964:	f7fe fe0e 	bl	8000584 <HAL_Delay>
-	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
- 8001968:	462e      	mov	r6, r5
+	  if(currentSek != sekTick){
+ 8001968:	462b      	mov	r3, r5
  800196a:	e7a2      	b.n	80018b2 <main+0x1ca>
  800196c:	40023800 	.word	0x40023800
  8001970:	40020800 	.word	0x40020800
- 8001974:	20000088 	.word	0x20000088
+ 8001974:	200000dc 	.word	0x200000dc
  8001978:	40020000 	.word	0x40020000
  800197c:	40020400 	.word	0x40020400
  8001980:	10210000 	.word	0x10210000
  8001984:	40014400 	.word	0x40014400
  8001988:	20000038 	.word	0x20000038
  800198c:	40014800 	.word	0x40014800
- 8001990:	200000c4 	.word	0x200000c4
+ 8001990:	20000118 	.word	0x20000118
  8001994:	40012000 	.word	0x40012000
  8001998:	0f000001 	.word	0x0f000001
- 800199c:	2000010c 	.word	0x2000010c
+ 800199c:	20000168 	.word	0x20000168
  80019a0:	40004400 	.word	0x40004400
  80019a4:	20000008 	.word	0x20000008
  80019a8:	20000009 	.word	0x20000009
@@ -4267,7 +4268,7 @@ void TIM1_UP_TIM10_IRQHandler(void)
  8001b6e:	f7ff ba46 	b.w	8000ffe <HAL_TIM_IRQHandler>
  8001b72:	bf00      	nop
  8001b74:	2000002c 	.word	0x2000002c
- 8001b78:	20000088 	.word	0x20000088
+ 8001b78:	200000dc 	.word	0x200000dc
 
 08001b7c <TIM1_TRG_COM_TIM11_IRQHandler>:
 * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
@@ -4437,7 +4438,7 @@ LoopFillZerobss:
   ldr  r2, =_sbss
  8001c28:	20000010 	.word	0x20000010
   ldr  r3, = _ebss
- 8001c2c:	2000014c 	.word	0x2000014c
+ 8001c2c:	200001a8 	.word	0x200001a8
 
 08001c30 <ADC_IRQHandler>:
  * @retval None       

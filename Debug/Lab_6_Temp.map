@@ -13,10 +13,12 @@ Allocating common symbols
 Common symbol       size              file
 
 lcd                 0x14              Src\main.o
+DHT11_buff_raw      0x52              Src\main.o
 htim10              0x3c              Src\main.o
 uwTick              0x4               Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
 pFlash              0x20              Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_flash.o
 hadc1               0x48              Src\main.o
+DHT11_data          0x5               Src\main.o
 htim11              0x3c              Src\delay.o
 huart2              0x40              Src\main.o
 
@@ -864,14 +866,24 @@ Discarded input sections
  .text          0x00000000        0x0 Src\main.o
  .data          0x00000000        0x0 Src\main.o
  .bss           0x00000000        0x0 Src\main.o
+ .text.read_DHT11_bit_raw
+                0x00000000       0x4c Src\main.o
+ .text.read_DHT11
+                0x00000000       0xbc Src\main.o
+ .text.readAnalogTemp
+                0x00000000       0x2c Src\main.o
  .text.printClock
                 0x00000000       0x20 Src\main.o
  .text._Error_Handler
+                0x00000000        0x2 Src\main.o
+ .bss.channel_1
                 0x00000000        0x2 Src\main.o
  .bss.s_position
                 0x00000000        0x1 Src\main.o
  .bss.sekCounter
                 0x00000000        0x4 Src\main.o
+ .data.DHT11_timeout
+                0x00000000        0x2 Src\main.o
  .text          0x00000000        0x0 Src\stm32f4xx_hal_msp.o
  .data          0x00000000        0x0 Src\stm32f4xx_hal_msp.o
  .bss           0x00000000        0x0 Src\stm32f4xx_hal_msp.o
@@ -1347,7 +1359,7 @@ LOAD c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../l
  .igot.plt      0x20000010        0x0 c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu/crtbegin.o
                 0x20000010                . = ALIGN (0x4)
 
-.bss            0x20000010      0x13c load address 0x08001cd8
+.bss            0x20000010      0x198 load address 0x08001cd8
                 0x20000010                _sbss = .
                 0x20000010                __bss_start__ = _sbss
  *(.bss)
@@ -1362,25 +1374,27 @@ LOAD c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../l
                 0x20000034                uwTick
  COMMON         0x20000038       0x3c Src\delay.o
                 0x20000038                htim11
- COMMON         0x20000074       0xd8 Src\main.o
+ COMMON         0x20000074      0x134 Src\main.o
                 0x20000074                lcd
-                0x20000088                htim10
-                0x200000c4                hadc1
-                0x2000010c                huart2
-                0x2000014c                . = ALIGN (0x4)
-                0x2000014c                _ebss = .
-                0x2000014c                __bss_end__ = _ebss
+                0x20000088                DHT11_buff_raw
+                0x200000dc                htim10
+                0x20000118                hadc1
+                0x20000160                DHT11_data
+                0x20000168                huart2
+                0x200001a8                . = ALIGN (0x4)
+                0x200001a8                _ebss = .
+                0x200001a8                __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x2000014c      0x600 load address 0x08001cd8
-                0x2000014c                . = ALIGN (0x4)
+                0x200001a8      0x600 load address 0x08001cd8
+                0x200001a8                . = ALIGN (0x4)
                 [!provide]                PROVIDE (end, .)
                 [!provide]                PROVIDE (_end, .)
-                0x2000034c                . = (. + _Min_Heap_Size)
- *fill*         0x2000014c      0x200 
-                0x2000074c                . = (. + _Min_Stack_Size)
- *fill*         0x2000034c      0x400 
-                0x2000074c                . = ALIGN (0x4)
+                0x200003a8                . = (. + _Min_Heap_Size)
+ *fill*         0x200001a8      0x200 
+                0x200007a8                . = (. + _Min_Stack_Size)
+ *fill*         0x200003a8      0x400 
+                0x200007a8                . = ALIGN (0x4)
 
 /DISCARD/
  libc.a(*)
@@ -1436,7 +1450,7 @@ LOAD c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../l
                 0x00000441       0x22 c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu/crtn.o
 OUTPUT(Lab_6_Temp.elf elf32-littlearm)
 
-.debug_info     0x00000000    0x14f9f
+.debug_info     0x00000000    0x15264
  .debug_info    0x00000000     0x117a Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_info    0x0000117a     0x15a5 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
  .debug_info    0x0000271f     0x16ae Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -1447,13 +1461,13 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_info    0x0000b546     0x1e9b Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
  .debug_info    0x0000d3e1      0xe88 Src\delay.o
  .debug_info    0x0000e269     0x1486 Src\lcdDisplay.o
- .debug_info    0x0000f6ef     0x21cc Src\main.o
- .debug_info    0x000118bb     0x19e1 Src\stm32f4xx_hal_msp.o
- .debug_info    0x0001329c      0xf10 Src\stm32f4xx_it.o
- .debug_info    0x000141ac      0xd46 Src\system_stm32f4xx.o
- .debug_info    0x00014ef2       0xad startup\startup_stm32f401xe.o
+ .debug_info    0x0000f6ef     0x2491 Src\main.o
+ .debug_info    0x00011b80     0x19e1 Src\stm32f4xx_hal_msp.o
+ .debug_info    0x00013561      0xf10 Src\stm32f4xx_it.o
+ .debug_info    0x00014471      0xd46 Src\system_stm32f4xx.o
+ .debug_info    0x000151b7       0xad startup\startup_stm32f401xe.o
 
-.debug_abbrev   0x00000000     0x2838
+.debug_abbrev   0x00000000     0x2865
  .debug_abbrev  0x00000000      0x308 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_abbrev  0x00000308      0x314 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
  .debug_abbrev  0x0000061c      0x399 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -1464,13 +1478,13 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_abbrev  0x0000161c      0x397 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
  .debug_abbrev  0x000019b3      0x215 Src\delay.o
  .debug_abbrev  0x00001bc8      0x262 Src\lcdDisplay.o
- .debug_abbrev  0x00001e2a      0x39a Src\main.o
- .debug_abbrev  0x000021c4      0x256 Src\stm32f4xx_hal_msp.o
- .debug_abbrev  0x0000241a      0x242 Src\stm32f4xx_it.o
- .debug_abbrev  0x0000265c      0x1ca Src\system_stm32f4xx.o
- .debug_abbrev  0x00002826       0x12 startup\startup_stm32f401xe.o
+ .debug_abbrev  0x00001e2a      0x3c7 Src\main.o
+ .debug_abbrev  0x000021f1      0x256 Src\stm32f4xx_hal_msp.o
+ .debug_abbrev  0x00002447      0x242 Src\stm32f4xx_it.o
+ .debug_abbrev  0x00002689      0x1ca Src\system_stm32f4xx.o
+ .debug_abbrev  0x00002853       0x12 startup\startup_stm32f401xe.o
 
-.debug_loc      0x00000000     0x67f9
+.debug_loc      0x00000000     0x69b9
  .debug_loc     0x00000000      0x11b Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_loc     0x0000011b      0x79c Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
  .debug_loc     0x000008b7      0x4fb Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -1481,11 +1495,11 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_loc     0x00004cac     0x132c Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
  .debug_loc     0x00005fd8       0x4c Src\delay.o
  .debug_loc     0x00006024      0x381 Src\lcdDisplay.o
- .debug_loc     0x000063a5      0x21f Src\main.o
- .debug_loc     0x000065c4      0x119 Src\stm32f4xx_hal_msp.o
- .debug_loc     0x000066dd      0x11c Src\system_stm32f4xx.o
+ .debug_loc     0x000063a5      0x3df Src\main.o
+ .debug_loc     0x00006784      0x119 Src\stm32f4xx_hal_msp.o
+ .debug_loc     0x0000689d      0x11c Src\system_stm32f4xx.o
 
-.debug_aranges  0x00000000      0x980
+.debug_aranges  0x00000000      0x998
  .debug_aranges
                 0x00000000       0xd8 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_aranges
@@ -1507,17 +1521,17 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_aranges
                 0x000007e8       0x68 Src\lcdDisplay.o
  .debug_aranges
-                0x00000850       0x38 Src\main.o
+                0x00000850       0x50 Src\main.o
  .debug_aranges
-                0x00000888       0x50 Src\stm32f4xx_hal_msp.o
+                0x000008a0       0x50 Src\stm32f4xx_hal_msp.o
  .debug_aranges
-                0x000008d8       0x58 Src\stm32f4xx_it.o
+                0x000008f0       0x58 Src\stm32f4xx_it.o
  .debug_aranges
-                0x00000930       0x28 Src\system_stm32f4xx.o
+                0x00000948       0x28 Src\system_stm32f4xx.o
  .debug_aranges
-                0x00000958       0x28 startup\startup_stm32f401xe.o
+                0x00000970       0x28 startup\startup_stm32f401xe.o
 
-.debug_ranges   0x00000000      0xc08
+.debug_ranges   0x00000000      0xc88
  .debug_ranges  0x00000000       0xc8 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_ranges  0x000000c8       0xc8 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
  .debug_ranges  0x00000190      0x138 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -1528,13 +1542,13 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_ranges  0x000007f0      0x178 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
  .debug_ranges  0x00000968       0x10 Src\delay.o
  .debug_ranges  0x00000978       0x58 Src\lcdDisplay.o
- .debug_ranges  0x000009d0       0xf0 Src\main.o
- .debug_ranges  0x00000ac0       0xc8 Src\stm32f4xx_hal_msp.o
- .debug_ranges  0x00000b88       0x48 Src\stm32f4xx_it.o
- .debug_ranges  0x00000bd0       0x18 Src\system_stm32f4xx.o
- .debug_ranges  0x00000be8       0x20 startup\startup_stm32f401xe.o
+ .debug_ranges  0x000009d0      0x170 Src\main.o
+ .debug_ranges  0x00000b40       0xc8 Src\stm32f4xx_hal_msp.o
+ .debug_ranges  0x00000c08       0x48 Src\stm32f4xx_it.o
+ .debug_ranges  0x00000c50       0x18 Src\system_stm32f4xx.o
+ .debug_ranges  0x00000c68       0x20 startup\startup_stm32f401xe.o
 
-.debug_line     0x00000000     0x5337
+.debug_line     0x00000000     0x53c2
  .debug_line    0x00000000      0x492 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_line    0x00000492      0x758 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
  .debug_line    0x00000bea      0x4dc Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -1545,40 +1559,40 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_line    0x0000322e      0xbef Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
  .debug_line    0x00003e1d      0x2b7 Src\delay.o
  .debug_line    0x000040d4      0x3c5 Src\lcdDisplay.o
- .debug_line    0x00004499      0x492 Src\main.o
- .debug_line    0x0000492b      0x3c9 Src\stm32f4xx_hal_msp.o
- .debug_line    0x00004cf4      0x34f Src\stm32f4xx_it.o
- .debug_line    0x00005043      0x275 Src\system_stm32f4xx.o
- .debug_line    0x000052b8       0x7f startup\startup_stm32f401xe.o
+ .debug_line    0x00004499      0x51d Src\main.o
+ .debug_line    0x000049b6      0x3c9 Src\stm32f4xx_hal_msp.o
+ .debug_line    0x00004d7f      0x34f Src\stm32f4xx_it.o
+ .debug_line    0x000050ce      0x275 Src\system_stm32f4xx.o
+ .debug_line    0x00005343       0x7f startup\startup_stm32f401xe.o
 
-.debug_str      0x00000000     0x3ba4
- .debug_str     0x00000000      0xdf3 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
+.debug_str      0x00000000     0x3c32
+ .debug_str     0x00000000      0xded Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
                                 0xe9f (size before relaxing)
- .debug_str     0x00000df3      0x6c9 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
+ .debug_str     0x00000ded      0x6c9 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
                                 0xdef (size before relaxing)
- .debug_str     0x000014bc      0x3c3 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
+ .debug_str     0x000014b6      0x3c3 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
                                 0xf64 (size before relaxing)
- .debug_str     0x0000187f      0x1d3 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.o
+ .debug_str     0x00001879      0x1d3 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_gpio.o
                                 0x9ae (size before relaxing)
- .debug_str     0x00001a52      0x2e9 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.o
+ .debug_str     0x00001a4c      0x2e9 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_rcc.o
                                 0xb81 (size before relaxing)
- .debug_str     0x00001d3b      0xeda Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.o
+ .debug_str     0x00001d35      0xeda Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.o
                                0x1861 (size before relaxing)
- .debug_str     0x00002c15      0x50d Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.o
+ .debug_str     0x00002c0f      0x50d Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.o
                                0x1121 (size before relaxing)
- .debug_str     0x00003122      0x6e7 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
+ .debug_str     0x0000311c      0x6e7 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
                                0x109e (size before relaxing)
- .debug_str     0x00003809       0x2e Src\delay.o
+ .debug_str     0x00003803       0x2e Src\delay.o
                                 0xad0 (size before relaxing)
- .debug_str     0x00003837      0x103 Src\lcdDisplay.o
+ .debug_str     0x00003831      0x103 Src\lcdDisplay.o
                                 0xbe1 (size before relaxing)
- .debug_str     0x0000393a      0x123 Src\main.o
-                               0x1713 (size before relaxing)
- .debug_str     0x00003a5d       0x25 Src\stm32f4xx_hal_msp.o
+ .debug_str     0x00003934      0x1b7 Src\main.o
+                               0x17ff (size before relaxing)
+ .debug_str     0x00003aeb       0x25 Src\stm32f4xx_hal_msp.o
                                0x13ab (size before relaxing)
- .debug_str     0x00003a82       0xdd Src\stm32f4xx_it.o
+ .debug_str     0x00003b10       0xdd Src\stm32f4xx_it.o
                                 0xb99 (size before relaxing)
- .debug_str     0x00003b5f       0x45 Src\system_stm32f4xx.o
+ .debug_str     0x00003bed       0x45 Src\system_stm32f4xx.o
                                 0x812 (size before relaxing)
 
 .comment        0x00000000       0x7c
@@ -1598,7 +1612,7 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .comment       0x0000007c       0x7d Src\stm32f4xx_it.o
  .comment       0x0000007c       0x7d Src\system_stm32f4xx.o
 
-.debug_frame    0x00000000     0x1be0
+.debug_frame    0x00000000     0x1c38
  .debug_frame   0x00000000      0x1d0 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal.o
  .debug_frame   0x000001d0      0x244 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_adc.o
  .debug_frame   0x00000414      0x158 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_cortex.o
@@ -1609,10 +1623,10 @@ OUTPUT(Lab_6_Temp.elf elf32-littlearm)
  .debug_frame   0x00001304      0x4a0 Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.o
  .debug_frame   0x000017a4       0x2c Src\delay.o
  .debug_frame   0x000017d0      0x154 Src\lcdDisplay.o
- .debug_frame   0x00001924       0x84 Src\main.o
- .debug_frame   0x000019a8       0xa8 Src\stm32f4xx_hal_msp.o
- .debug_frame   0x00001a50       0xcc Src\stm32f4xx_it.o
- .debug_frame   0x00001b1c       0x38 Src\system_stm32f4xx.o
- .debug_frame   0x00001b54       0x2c c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/../../../../arm-atollic-eabi/lib/armv7e-m/fpu\libc_nano.a(lib_a-init.o)
- .debug_frame   0x00001b80       0x2c c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu\libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x00001bac       0x34 c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu\libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x00001924       0xdc Src\main.o
+ .debug_frame   0x00001a00       0xa8 Src\stm32f4xx_hal_msp.o
+ .debug_frame   0x00001aa8       0xcc Src\stm32f4xx_it.o
+ .debug_frame   0x00001b74       0x38 Src\system_stm32f4xx.o
+ .debug_frame   0x00001bac       0x2c c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/../../../../arm-atollic-eabi/lib/armv7e-m/fpu\libc_nano.a(lib_a-init.o)
+ .debug_frame   0x00001bd8       0x2c c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu\libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x00001c04       0x34 c:/program files (x86)/atollic/truestudio for stm32 9.0.1/armtools/bin/../lib/gcc/arm-atollic-eabi/6.3.1/armv7e-m/fpu\libgcc.a(_udivmoddi4.o)
