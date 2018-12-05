@@ -141,6 +141,7 @@ int main(void)
   uint8_t sekCount = 0;
   sekTick = 39660;
   uint32_t currentSek = sekTick + 1;
+  uint16_t str[20];
 
   while (1)
   {
@@ -180,6 +181,9 @@ int main(void)
 	  			i++;
 
 	  			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
+	  			sprintf(str, "Stepper:%d\n\r", channel_1);
+	  			HAL_UART_Transmit(&huart2, str, strlen(str), 1000);
 	  		}
 
 	  		HAL_Delay(10);
@@ -482,7 +486,8 @@ int16_t read_DHT11_bit_raw(void){
 }
 
 int16_t readAnalogTemp(void){
-	uint8_t temperature;
+	uint16_t temperature = 0;
+	uint16_t maxADCValue = 4096;
 
 	if(HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY) == HAL_OK){
 		channel_1 = HAL_ADC_GetValue(&hadc1);
@@ -490,6 +495,9 @@ int16_t readAnalogTemp(void){
 	HAL_ADC_Stop(&hadc1);
 
 	/*Calculate Thermistor Resistance. Code Begin */
+	//R1 = -(10k*V/(V-1))		där v är Vin/Vcc
+	float Vin = channel_1/maxADCValue;
+	float R1 = (-1.0)*((10000.0*Vin)/(Vin-1.0));
 
 	/*Calculate Thermistor Resistance. Code End*/
 
