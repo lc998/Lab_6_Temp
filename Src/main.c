@@ -41,6 +41,7 @@
 #include "stm32f4xx_hal.h"
 
 /* USER CODE BEGIN Includes */
+#include <math.h>
 #include "delay.h"
 #include "lcdDisplay.h"
 /* USER CODE END Includes */
@@ -149,6 +150,8 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
+	  int16_t _temp = readAnalogTemp();
+	  int16_t _DHT11 = read_DHT11();
 
 	  if(currentSek != sekTick){
 	  			uint32_t temp = sekTick;
@@ -182,7 +185,7 @@ int main(void)
 
 	  			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
-	  			sprintf(str, "Stepper:%d\n\r", channel_1);
+	  			sprintf(str, "DHT11:%d\n\r", _DHT11);
 	  			HAL_UART_Transmit(&huart2, str, strlen(str), 1000);
 	  		}
 
@@ -486,7 +489,7 @@ int16_t read_DHT11_bit_raw(void){
 }
 
 int16_t readAnalogTemp(void){
-	uint16_t temperature = 0;
+	int16_t temperature = 0;
 	uint16_t maxADCValue = 4096;
 
 	if(HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY) == HAL_OK){
@@ -501,11 +504,16 @@ int16_t readAnalogTemp(void){
 
 	/*Calculate Thermistor Resistance. Code End*/
 
-	/*Calculate Thermistor. Code Begin*/
+	/*Calculate Thermistor temp. Code Begin*/
+	//FORMEL:: temp = 1/( ( ((ln R1 - ln 10000)/B) + (1/298.15) ) )
 
-	/*Calculate Thermistor. Code End*/
+	float B =  3450;
+	float C = (1.0/298.15);
 
+	float X = logf((R1 - logf(10000.0))/B);
 
+	temperature = (int16_t)(1.0/(X+C));
+	/*Calculate Thermistor temp. Code End*/
 	return temperature;
 }
 
