@@ -16,4 +16,5 @@ void TextLCD_Clear (TextLCDType *lcd);
 void TextLCD_Position (TextLCDType *lcd, int x, int y);
 void TextLCD_Putchar (TextLCDType *lcd, uint8_t data);
 void TextLCD_Puts (TextLCDType *lcd, char *string);
+void TextLCD_PutInt(TextLCDType *lcd, int i);
 void TextLCD_Printf (TextLCDType *lcd, char *message, ...);

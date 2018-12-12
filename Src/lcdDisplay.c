@@ -142,6 +142,22 @@ void TextLCD_Puts (TextLCDType *lcd, char *string){
 	delay_us(40);
 }
 
+void TextLCD_PutInt(TextLCDType *lcd, int i){
+	if(i < 10 && i >= 0){
+		TextLCD_Putchar(lcd, 0x30+i);
+		return;
+	}
+
+	if(i < 0){
+		TextLCD_Putchar(lcd, '-');
+		TextLCD_PutInt(lcd, -i);
+	}else{
+		TextLCD_PutInt(lcd, i/10);
+		TextLCD_Putchar(lcd, 0x30+(i%10));
+	}
+	delay_us(40);
+}
+
 //
 void TextLCD_Printf (TextLCDType *lcd, char *message, ...){
 
